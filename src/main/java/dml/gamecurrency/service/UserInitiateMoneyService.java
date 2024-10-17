@@ -29,9 +29,6 @@ public class UserInitiateMoneyService {
         UserInitiateMoneyTaskRepository userInitiateMoneyTaskRepository = repositorySet.getUserInitiateMoneyTaskRepository();
 
         UserInitiateMoneyTask task = userInitiateMoneyTaskRepository.find(taskName);
-        if (task.isEmpty()) {
-            return false;
-        }
         if (task == null) {
             task = (UserInitiateMoneyTask) LargeScaleTaskService.createTask(getLargeScaleTaskServiceRepositorySet(repositorySet),
                     taskName, new UserInitiateMoneyTask(), currentTime);
@@ -58,6 +55,10 @@ public class UserInitiateMoneyService {
                         taskName);
             }
             return true;
+        } else {
+            if (task.isEmpty()) {
+                return false;
+            }
         }
 
         TakeTaskSegmentToExecuteResult takeSegmentResult = LargeScaleTaskService.takeTaskSegmentToExecute(
