@@ -24,7 +24,7 @@ public class UserInitiateMoneyService {
     public static boolean executeUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
                                                        String taskName, long currentTime,
                                                        long maxSegmentExecutionTime, long maxTimeToTaskReady, int userBatchSize,
-                                                       List<Object> userIdList, GameCurrencyAccount newAccount, GameCurrencyAccountBillItem newGameCurrencyAccountBillItem,
+                                                       List userIdList, GameCurrencyAccount newAccount, GameCurrencyAccountBillItem newGameCurrencyAccountBillItem,
                                                        String currency, String amount) {
         UserInitiateMoneyTaskRepository userInitiateMoneyTaskRepository = repositorySet.getUserInitiateMoneyTaskRepository();
 
@@ -48,7 +48,7 @@ public class UserInitiateMoneyService {
                 for (int i = 0; i < batchCount; i++) {
                     int start = i * userBatchSize;
                     int end = Math.min((i + 1) * userBatchSize, size);
-                    List<Object> subList = userIdList.subList(start, end);
+                    List subList = userIdList.subList(start, end);
                     UserInitiateMoneyTaskSegment segment = new UserInitiateMoneyTaskSegment();
                     segment.setUserIdList(subList);
                     LargeScaleTaskService.addTaskSegment(getLargeScaleTaskServiceRepositorySet(repositorySet),
@@ -67,7 +67,7 @@ public class UserInitiateMoneyService {
         if (segment == null) {
             return false;
         }
-        List<Object> segmentUserIdList = segment.getUserIdList();
+        List segmentUserIdList = segment.getUserIdList();
         for (Object userId : segmentUserIdList) {
             GameCurrencyAccount account = GameCurrencyAccountingService.
                     getOrCreateAccount(getGameCurrencyAccountingServiceRepositorySet(repositorySet),

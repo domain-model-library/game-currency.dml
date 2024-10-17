@@ -6,7 +6,7 @@ import java.util.List;
 
 public class UserInitiateMoneyTaskSegment extends LargeScaleTaskSegmentBase {
     private String id;
-    private List<Object> userIdList;
+    private List userIdList;
 
     @Override
     public void setId(Object id) {
@@ -18,11 +18,11 @@ public class UserInitiateMoneyTaskSegment extends LargeScaleTaskSegmentBase {
         return id;
     }
 
-    public List<Object> getUserIdList() {
+    public List getUserIdList() {
         return userIdList;
     }
 
-    public void setUserIdList(List<Object> userIdList) {
+    public void setUserIdList(List userIdList) {
         this.userIdList = userIdList;
     }
 }
