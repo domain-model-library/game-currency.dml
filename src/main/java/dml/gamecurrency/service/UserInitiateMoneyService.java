@@ -21,11 +21,11 @@ public class UserInitiateMoneyService {
     /**
      * 如果任务没有完成还需要继续执行，返回true
      */
-    public boolean executeUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
-                                                String taskName, long currentTime,
-                                                long maxSegmentExecutionTime, long maxTimeToTaskReady, int userBatchSize,
-                                                List<Object> userIdList, GameCurrencyAccount newAccount, GameCurrencyAccountBillItem newGameCurrencyAccountBillItem,
-                                                String currency, String amount) {
+    public static boolean executeUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
+                                                       String taskName, long currentTime,
+                                                       long maxSegmentExecutionTime, long maxTimeToTaskReady, int userBatchSize,
+                                                       List<Object> userIdList, GameCurrencyAccount newAccount, GameCurrencyAccountBillItem newGameCurrencyAccountBillItem,
+                                                       String currency, String amount) {
         UserInitiateMoneyTaskRepository userInitiateMoneyTaskRepository = repositorySet.getUserInitiateMoneyTaskRepository();
 
         UserInitiateMoneyTask task = userInitiateMoneyTaskRepository.find(taskName);
