@@ -21,18 +21,25 @@ public class AccountingTest {
                 userId, "gold", new TestGameCurrencyAccount());
 
         //充1000金币
-        DepositResult depositResult = GameCurrencyAccountingService.deposit(gameCurrencyAccountingServiceRepositorySet,
+        DepositResult depositResult1 = GameCurrencyAccountingService.deposit(gameCurrencyAccountingServiceRepositorySet,
                 goldAccount.getId(), "1000", new TestGameCurrencyAccountBillItem());
-        assertEquals("1000", depositResult.getBillItem().getTransactionAmount());
-        assertEquals("1000", depositResult.getAccount().getBalance());
-        assertEquals(1, depositResult.getBillItem().getAccountTransactionNumber());
+        assertEquals("1000", depositResult1.getBillItem().getTransactionAmount());
+        assertEquals("1000", depositResult1.getAccount().getBalance());
+        assertEquals(1, depositResult1.getBillItem().getAccountTransactionNumber());
 
         //花500金币
-        WithdrawResult withdrawResult = GameCurrencyAccountingService.withdraw(gameCurrencyAccountingServiceRepositorySet,
+        WithdrawResult withdrawResult1 = GameCurrencyAccountingService.withdraw(gameCurrencyAccountingServiceRepositorySet,
                 userId, "gold", "500", new TestGameCurrencyAccountBillItem());
-        assertEquals("500", withdrawResult.getBillItem().getTransactionAmount());
-        assertEquals("500", withdrawResult.getAccount().getBalance());
-        assertEquals(2, withdrawResult.getBillItem().getAccountTransactionNumber());
+        assertEquals("500", withdrawResult1.getBillItem().getTransactionAmount());
+        assertEquals("500", withdrawResult1.getAccount().getBalance());
+        assertEquals(2, withdrawResult1.getBillItem().getAccountTransactionNumber());
+
+        //花100金币
+        WithdrawResult withdrawResult2 = GameCurrencyAccountingService.withdraw(gameCurrencyAccountingServiceRepositorySet,
+                goldAccount.getId(), "100", new TestGameCurrencyAccountBillItem());
+        assertEquals("100", withdrawResult2.getBillItem().getTransactionAmount());
+        assertEquals("400", withdrawResult2.getAccount().getBalance());
+        assertEquals(3, withdrawResult2.getBillItem().getAccountTransactionNumber());
     }
 
     GameCurrencyAccountRepository gameCurrencyAccountRepository = TestCommonRepository.instance(GameCurrencyAccountRepository.class);
