@@ -28,6 +28,27 @@ public class GameCurrencyAccountingService {
         return newAccount;
     }
 
+    public static GameCurrencyAccount getOrCreateAccount(GameCurrencyAccountingServiceRepositorySet repositorySet,
+                                                         Object userId, String currency, GameCurrencyAccount newAccount) {
+        GameCurrencyAccountRepository<GameCurrencyAccount, Object> accountRepository = repositorySet.getGameCurrencyAccountRepository();
+        GameCurrencyAccountIdGeneratorRepository accountIdGeneratorRepository = repositorySet.getGameCurrencyAccountIdGeneratorRepository();
+        GameUserCurrencyAccountsRepository userAccountsRepository = repositorySet.getGameUserCurrencyAccountsRepository();
+
+        GameUserCurrencyAccounts userAccounts = new GameUserCurrencyAccounts();
+        userAccounts.setUserId(userId);
+        userAccounts = userAccountsRepository.takeOrPutIfAbsent(userId, userAccounts);
+        Object accountId = userAccounts.getAccount(currency);
+        if (accountId == null) {
+            newAccount.setId(accountIdGeneratorRepository.take().generateId());
+            newAccount.setCurrency(currency);
+            accountRepository.put(newAccount);
+            userAccounts.putAccount(currency, newAccount.getId());
+            return newAccount;
+        } else {
+            return accountRepository.find(accountId);
+        }
+    }
+
     public static DepositResult deposit(GameCurrencyAccountingServiceRepositorySet gameCurrencyAccountingServiceRepositorySet,
                                         Object accountId, String amount, GameCurrencyAccountBillItem newGameCurrencyAccountBillItem) {
         GameCurrencyAccountRepository<GameCurrencyAccount, Object> accountRepository =
@@ -77,4 +98,6 @@ public class GameCurrencyAccountingService {
         withdrawResult.setBillItem(newGameCurrencyAccountBillItem);
         return withdrawResult;
     }
+
+
 }
