@@ -1,9 +1,6 @@
 package dml.gamecurrency.service;
 
-import dml.gamecurrency.entity.GameCurrencyAccount;
-import dml.gamecurrency.entity.GameCurrencyAccountBillItem;
-import dml.gamecurrency.entity.UserInitiateMoneyTask;
-import dml.gamecurrency.entity.UserInitiateMoneyTaskSegment;
+import dml.gamecurrency.entity.*;
 import dml.gamecurrency.repository.*;
 import dml.gamecurrency.service.repositoryset.GameCurrencyAccountingServiceRepositorySet;
 import dml.gamecurrency.service.repositoryset.UserInitiateMoneyServiceRepositorySet;
@@ -24,7 +21,8 @@ public class UserInitiateMoneyService {
     public static boolean executeUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
                                                        String taskName, long currentTime,
                                                        long maxSegmentExecutionTime, long maxTimeToTaskReady, int userBatchSize,
-                                                       List userIdList, GameCurrencyAccount newAccount, GameCurrencyAccountBillItem newGameCurrencyAccountBillItem,
+                                                       List userIdList, GameCurrencyAccountTemplate accountTemplate,
+                                                       GameCurrencyAccountBillItemTemplate accountBillItemTemplate,
                                                        String currency, String amount) {
         UserInitiateMoneyTaskRepository userInitiateMoneyTaskRepository = repositorySet.getUserInitiateMoneyTaskRepository();
 
@@ -72,9 +70,9 @@ public class UserInitiateMoneyService {
         for (Object userId : segmentUserIdList) {
             GameCurrencyAccount account = GameCurrencyAccountingService.
                     getOrCreateAccount(getGameCurrencyAccountingServiceRepositorySet(repositorySet),
-                            userId, currency, newAccount);
+                            userId, currency, accountTemplate.createNew());
             GameCurrencyAccountingService.deposit(getGameCurrencyAccountingServiceRepositorySet(repositorySet),
-                    account.getId(), amount, newGameCurrencyAccountBillItem);
+                    account.getId(), amount, accountBillItemTemplate.createNew());
         }
         LargeScaleTaskService.completeTaskSegment(getLargeScaleTaskServiceRepositorySet(repositorySet),
                 segment.getId());
