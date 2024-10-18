@@ -31,9 +31,6 @@ public abstract class GameCurrencyAccountBase implements GameCurrencyAccount {
     public long withdraw(String amount) {
         BigDecimal balance = new BigDecimal(this.balance);
         BigDecimal withdrawAmount = new BigDecimal(amount);
-        if (balance.compareTo(withdrawAmount) < 0) {
-            throw new IllegalArgumentException("Insufficient balance");
-        }
         this.balance = balance.subtract(withdrawAmount).toString();
         transactionNumber++;
         return transactionNumber;
