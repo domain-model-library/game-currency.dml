@@ -44,13 +44,11 @@ public class AccountingTest {
 
     GameCurrencyAccountRepository gameCurrencyAccountRepository = TestCommonRepository.instance(GameCurrencyAccountRepository.class);
     GameCurrencyAccountIdGeneratorRepository gameCurrencyAccountIdGeneratorRepository =
-            TestCommonSingletonRepository.instance(GameCurrencyAccountIdGeneratorRepository.class, new LongIdGenerator(1) {
-            });
+            TestCommonSingletonRepository.instance(GameCurrencyAccountIdGeneratorRepository.class, new LongIdGenerator(1));
     GameUserCurrencyAccountsRepository gameUserCurrencyAccountsRepository = TestCommonRepository.instance(GameUserCurrencyAccountsRepository.class);
     GameCurrencyAccountBillItemRepository gameCurrencyAccountBillItemRepository = TestCommonRepository.instance(GameCurrencyAccountBillItemRepository.class);
     GameCurrencyAccountBillItemIdGeneratorRepository gameCurrencyAccountBillItemIdGeneratorRepository =
-            TestCommonSingletonRepository.instance(GameCurrencyAccountBillItemIdGeneratorRepository.class, new LongIdGenerator(1) {
-            });
+            TestCommonSingletonRepository.instance(GameCurrencyAccountBillItemIdGeneratorRepository.class, new LongIdGenerator(1));
 
     GameCurrencyAccountingServiceRepositorySet gameCurrencyAccountingServiceRepositorySet = new GameCurrencyAccountingServiceRepositorySet() {
         @Override
