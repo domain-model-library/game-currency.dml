@@ -18,6 +18,22 @@ public class UserInitiateMoneyTaskSegment extends LargeScaleTaskSegmentBase {
         return id;
     }
 
+    public Object getOneUserId() {
+        if (userIdList == null || userIdList.isEmpty()) {
+            return null;
+        }
+        return userIdList.get(0);
+    }
+
+    public void executedForUser(Object userId) {
+        userIdList.remove(userId);
+        if (userIdList.isEmpty()) {
+            setCompleted();
+        } else {
+            resetToProcess();
+        }
+    }
+
     public List getUserIdList() {
         return userIdList;
     }

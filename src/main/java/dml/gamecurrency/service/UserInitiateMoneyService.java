@@ -1,6 +1,9 @@
 package dml.gamecurrency.service;
 
-import dml.gamecurrency.entity.*;
+import dml.gamecurrency.entity.GameCurrencyAccount;
+import dml.gamecurrency.entity.GameCurrencyAccountBillItem;
+import dml.gamecurrency.entity.UserInitiateMoneyTask;
+import dml.gamecurrency.entity.UserInitiateMoneyTaskSegment;
 import dml.gamecurrency.repository.*;
 import dml.gamecurrency.service.repositoryset.GameCurrencyAccountingServiceRepositorySet;
 import dml.gamecurrency.service.repositoryset.UserInitiateMoneyServiceRepositorySet;
@@ -15,49 +18,64 @@ import java.util.List;
 
 public class UserInitiateMoneyService {
 
+    public static boolean isUserInitiateMoneyTaskCompleted(UserInitiateMoneyServiceRepositorySet repositorySet,
+                                                           String taskName) {
+        UserInitiateMoneyTaskRepository userInitiateMoneyTaskRepository = repositorySet.getUserInitiateMoneyTaskRepository();
+        UserInitiateMoneyTask task = userInitiateMoneyTaskRepository.find(taskName);
+        if (task == null) {
+            return false;
+        }
+        return task.isCompleted();
+    }
+
     /**
-     * 如果任务没有完成还需要继续执行，返回true
+     * 创建任务
+     *
+     * @return 如果任务已经存在，返回false
      */
-    public static boolean executeUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
-                                                       String taskName, long currentTime,
-                                                       long maxSegmentExecutionTime, long maxTimeToTaskReady, int userBatchSize,
-                                                       List userIdList, GameCurrencyAccountTemplate accountTemplate,
-                                                       GameCurrencyAccountBillItemTemplate accountBillItemTemplate,
-                                                       String currency, String amount) {
+    public static boolean createUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
+                                                      String taskName, long currentTime) {
         UserInitiateMoneyTaskRepository userInitiateMoneyTaskRepository = repositorySet.getUserInitiateMoneyTaskRepository();
 
         UserInitiateMoneyTask task = userInitiateMoneyTaskRepository.find(taskName);
         if (task == null) {
             task = (UserInitiateMoneyTask) LargeScaleTaskService.createTask(getLargeScaleTaskServiceRepositorySet(repositorySet),
                     taskName, new UserInitiateMoneyTask(), currentTime);
-            if (task != null) {
-                if (userIdList.isEmpty()) {
-                    return false;
-                }
-                //分批次
-                int size = userIdList.size();
-                int batchCount = size / userBatchSize;
-                if (size % userBatchSize != 0) {
-                    batchCount++;
-                }
-                for (int i = 0; i < batchCount; i++) {
-                    int start = i * userBatchSize;
-                    int end = Math.min((i + 1) * userBatchSize, size);
-                    List subList = userIdList.subList(start, end);
-                    UserInitiateMoneyTaskSegment segment = new UserInitiateMoneyTaskSegment();
-                    segment.setUserIdList(subList);
-                    LargeScaleTaskService.addTaskSegment(getLargeScaleTaskServiceRepositorySet(repositorySet),
-                            taskName, segment);
-                }
-                LargeScaleTaskService.setTaskReadyToProcess(getLargeScaleTaskServiceRepositorySet(repositorySet),
-                        taskName);
-            }
-            return true;
-        } else {
-            if (task.isEmpty()) {
-                return false;
-            }
+            return task != null;
         }
+        return false;
+    }
+
+    public static void addAllUserIdToUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
+                                                           String taskName, int userBatchSize, List userIdList) {
+        //分批次
+        int size = userIdList.size();
+        int batchCount = size / userBatchSize;
+        if (size % userBatchSize != 0) {
+            batchCount++;
+        }
+        for (int i = 0; i < batchCount; i++) {
+            int start = i * userBatchSize;
+            int end = Math.min((i + 1) * userBatchSize, size);
+            List subList = userIdList.subList(start, end);
+            UserInitiateMoneyTaskSegment segment = new UserInitiateMoneyTaskSegment();
+            segment.setUserIdList(subList);
+            LargeScaleTaskService.addTaskSegment(getLargeScaleTaskServiceRepositorySet(repositorySet),
+                    taskName, segment);
+        }
+        LargeScaleTaskService.setTaskReadyToProcess(getLargeScaleTaskServiceRepositorySet(repositorySet),
+                taskName);
+    }
+
+    /**
+     * 如果任务没有完成还需要继续执行，返回true
+     */
+    public static boolean executeUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
+                                                       String taskName, long currentTime,
+                                                       long maxSegmentExecutionTime, long maxTimeToTaskReady,
+                                                       GameCurrencyAccount newAccount,
+                                                       GameCurrencyAccountBillItem newAccountBillItem,
+                                                       String currency, String amount) {
 
         TakeTaskSegmentToExecuteResult takeSegmentResult = LargeScaleTaskService.takeTaskSegmentToExecute(
                 getLargeScaleTaskServiceRepositorySet(repositorySet),
@@ -66,16 +84,13 @@ public class UserInitiateMoneyService {
         if (segment == null) {
             return false;
         }
-        List segmentUserIdList = segment.getUserIdList();
-        for (Object userId : segmentUserIdList) {
-            GameCurrencyAccount account = GameCurrencyAccountingService.
-                    getOrCreateAccount(getGameCurrencyAccountingServiceRepositorySet(repositorySet),
-                            userId, currency, accountTemplate.createNew());
-            GameCurrencyAccountingService.deposit(getGameCurrencyAccountingServiceRepositorySet(repositorySet),
-                    account.getId(), amount, accountBillItemTemplate.createNew());
-        }
-        LargeScaleTaskService.completeTaskSegment(getLargeScaleTaskServiceRepositorySet(repositorySet),
-                segment.getId());
+        Object userId = segment.getOneUserId();//一次只处理一个用户，避免锁多个用户
+        GameCurrencyAccount account = GameCurrencyAccountingService.
+                getOrCreateAccount(getGameCurrencyAccountingServiceRepositorySet(repositorySet),
+                        userId, currency, newAccount);
+        GameCurrencyAccountingService.deposit(getGameCurrencyAccountingServiceRepositorySet(repositorySet),
+                account.getId(), amount, newAccountBillItem);
+        segment.executedForUser(userId);
         return true;
 
     }

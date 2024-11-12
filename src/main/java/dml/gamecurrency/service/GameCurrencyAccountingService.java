@@ -49,6 +49,22 @@ public class GameCurrencyAccountingService {
         }
     }
 
+    public static GameCurrencyAccount getAccount(GameCurrencyAccountingServiceRepositorySet repositorySet,
+                                                 Object userId, String currency) {
+        GameCurrencyAccountRepository<GameCurrencyAccount, Object> accountRepository = repositorySet.getGameCurrencyAccountRepository();
+        GameUserCurrencyAccountsRepository userAccountsRepository = repositorySet.getGameUserCurrencyAccountsRepository();
+
+        GameUserCurrencyAccounts userAccounts = userAccountsRepository.find(userId);
+        if (userAccounts == null) {
+            return null;
+        }
+        Object accountId = userAccounts.getAccount(currency);
+        if (accountId == null) {
+            return null;
+        }
+        return accountRepository.find(accountId);
+    }
+
     public static DepositResult deposit(GameCurrencyAccountingServiceRepositorySet repositorySet,
                                         Object accountId, String amount, GameCurrencyAccountBillItem newGameCurrencyAccountBillItem) {
         GameCurrencyAccountRepository<GameCurrencyAccount, Object> accountRepository =
