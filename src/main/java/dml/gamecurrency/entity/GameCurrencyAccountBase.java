@@ -36,5 +36,20 @@ public abstract class GameCurrencyAccountBase implements GameCurrencyAccount {
         return transactionNumber;
     }
 
+    @Override
+    public boolean isBalanceInRange(String minBalance, String maxBalance) {
+        BigDecimal balance = new BigDecimal(this.balance);
+        BigDecimal min = new BigDecimal(minBalance);
+        BigDecimal max = new BigDecimal(maxBalance);
+        return balance.compareTo(min) >= 0 && balance.compareTo(max) <= 0;
+    }
+
+    @Override
+    public boolean isBalanceGreaterThanOrEqualTo(String value) {
+        BigDecimal balance = new BigDecimal(this.balance);
+        BigDecimal targetBalance = new BigDecimal(value);
+        return balance.compareTo(targetBalance) >= 0;
+    }
+
 
 }

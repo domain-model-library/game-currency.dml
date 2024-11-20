@@ -175,5 +175,44 @@ public class GameCurrencyAccountingService {
         return withdrawResult;
     }
 
+    public static boolean isBalanceInRange(GameCurrencyAccountingServiceRepositorySet repositorySet,
+                                           Object userId, String currency, String minBalance, String maxBalance) {
+        GameCurrencyAccountRepository<GameCurrencyAccount, Object> accountRepository =
+                repositorySet.getGameCurrencyAccountRepository();
+        GameUserCurrencyAccountsRepository userAccountsRepository = repositorySet.getGameUserCurrencyAccountsRepository();
+
+        GameUserCurrencyAccounts userAccounts = userAccountsRepository.find(userId);
+        if (userAccounts == null) {
+            return false;
+        }
+        Object accountId = userAccounts.getAccount(currency);
+        if (accountId == null) {
+            return false;
+        }
+        GameCurrencyAccount account = accountRepository.find(accountId);
+        return account.isBalanceInRange(minBalance, maxBalance);
+    }
+
+    /**
+     * 余额是否大于等于指定值
+     */
+    public static boolean isBalanceGreaterThanOrEqualTo(GameCurrencyAccountingServiceRepositorySet repositorySet,
+                                                        Object userId, String currency, String balance) {
+        GameCurrencyAccountRepository<GameCurrencyAccount, Object> accountRepository =
+                repositorySet.getGameCurrencyAccountRepository();
+        GameUserCurrencyAccountsRepository userAccountsRepository = repositorySet.getGameUserCurrencyAccountsRepository();
+
+        GameUserCurrencyAccounts userAccounts = userAccountsRepository.find(userId);
+        if (userAccounts == null) {
+            return false;
+        }
+        Object accountId = userAccounts.getAccount(currency);
+        if (accountId == null) {
+            return false;
+        }
+        GameCurrencyAccount account = accountRepository.find(accountId);
+        return account.isBalanceGreaterThanOrEqualTo(balance);
+    }
+
 
 }

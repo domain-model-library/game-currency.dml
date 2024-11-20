@@ -12,4 +12,8 @@ public interface GameCurrencyAccount {
     String getBalance();
 
     long withdraw(String amount);
+
+    boolean isBalanceInRange(String minBalance, String maxBalance);
+
+    boolean isBalanceGreaterThanOrEqualTo(String balance);
 }
