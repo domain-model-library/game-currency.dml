@@ -10,6 +10,11 @@ public class UserInitiateMoneyTask extends LargeScaleTaskBase {
         this.taskName = name;
     }
 
+    @Override
+    public String getName() {
+        return taskName;
+    }
+
     public boolean isCompleted() {
         return isEmpty();
     }
