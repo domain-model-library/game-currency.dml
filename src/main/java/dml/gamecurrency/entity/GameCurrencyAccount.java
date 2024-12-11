@@ -7,6 +7,8 @@ public interface GameCurrencyAccount {
 
     void setCurrency(String currency);
 
+    String getCurrency();
+
     long deposit(String amount);
 
     String getBalance();

@@ -14,6 +14,11 @@ public abstract class GameCurrencyAccountBase implements GameCurrencyAccount {
     }
 
     @Override
+    public String getCurrency() {
+        return currency;
+    }
+
+    @Override
     public long deposit(String amount) {
         BigDecimal balance = new BigDecimal(this.balance);
         BigDecimal depositAmount = new BigDecimal(amount);
