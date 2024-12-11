@@ -1,5 +1,6 @@
 package dml.gamecurrency.entity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,9 @@ public class GameUserCurrencyAccounts {
     }
 
     public List<Object> getAllAccountIds() {
-        return (List<Object>) currencyToAccountIdMap.values();
+        List<Object> allAccountIds = new ArrayList<>();
+        allAccountIds.addAll(currencyToAccountIdMap.values());
+        return allAccountIds;
     }
 
     public Object getUserId() {
