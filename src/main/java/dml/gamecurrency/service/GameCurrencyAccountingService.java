@@ -8,6 +8,9 @@ import dml.gamecurrency.service.repositoryset.GameCurrencyAccountingServiceRepos
 import dml.gamecurrency.service.result.DepositResult;
 import dml.gamecurrency.service.result.WithdrawResult;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameCurrencyAccountingService {
     public static GameCurrencyAccount createAccount(GameCurrencyAccountingServiceRepositorySet repositorySet,
                                                     Object userId, String currency, GameCurrencyAccount newAccount) {
@@ -63,6 +66,23 @@ public class GameCurrencyAccountingService {
             return null;
         }
         return accountRepository.find(accountId);
+    }
+
+    public static List<GameCurrencyAccount> getAllAccountsForUser(GameCurrencyAccountingServiceRepositorySet repositorySet,
+                                                                  Object userId) {
+        GameCurrencyAccountRepository<GameCurrencyAccount, Object> accountRepository = repositorySet.getGameCurrencyAccountRepository();
+        GameUserCurrencyAccountsRepository userAccountsRepository = repositorySet.getGameUserCurrencyAccountsRepository();
+
+        GameUserCurrencyAccounts userAccounts = userAccountsRepository.find(userId);
+        if (userAccounts == null) {
+            return null;
+        }
+        List<GameCurrencyAccount> accounts = new ArrayList<>();
+        List<Object> accountIds = userAccounts.getAllAccountIds();
+        for (Object accountId : accountIds) {
+            accounts.add(accountRepository.find(accountId));
+        }
+        return accounts;
     }
 
     public static DepositResult deposit(GameCurrencyAccountingServiceRepositorySet repositorySet,

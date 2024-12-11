@@ -1,6 +1,7 @@
 package dml.gamecurrency.entity;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GameUserCurrencyAccounts {
@@ -19,6 +20,10 @@ public class GameUserCurrencyAccounts {
         return currencyToAccountIdMap.get(currency);
     }
 
+    public List<Object> getAllAccountIds() {
+        return (List<Object>) currencyToAccountIdMap.values();
+    }
+
     public Object getUserId() {
         return userId;
     }
@@ -34,5 +39,4 @@ public class GameUserCurrencyAccounts {
     public void setCurrencyToAccountIdMap(Map<String, Object> currencyToAccountIdMap) {
         this.currencyToAccountIdMap = currencyToAccountIdMap;
     }
-
 }
