@@ -4,14 +4,10 @@ import dml.gamecurrency.entity.GameCurrencyAccount;
 import dml.gamecurrency.entity.GameCurrencyAccountBillItem;
 import dml.gamecurrency.entity.UserInitiateMoneyTask;
 import dml.gamecurrency.entity.UserInitiateMoneyTaskSegment;
-import dml.gamecurrency.repository.GameCurrencyAccountBillItemRepository;
-import dml.gamecurrency.repository.GameCurrencyAccountRepository;
-import dml.gamecurrency.repository.GameUserCurrencyAccountsRepository;
-import dml.gamecurrency.repository.UserInitiateMoneyTaskRepository;
+import dml.gamecurrency.repository.*;
 import dml.gamecurrency.service.repositoryset.GameCurrencyAccountingServiceRepositorySet;
 import dml.gamecurrency.service.repositoryset.UserInitiateMoneyServiceRepositorySet;
 import dml.largescaletaskmanagement.repository.LargeScaleTaskRepository;
-import dml.largescaletaskmanagement.repository.LargeScaleTaskSegmentIDGeneratorRepository;
 import dml.largescaletaskmanagement.repository.LargeScaleTaskSegmentRepository;
 import dml.largescaletaskmanagement.service.LargeScaleTaskService;
 import dml.largescaletaskmanagement.service.repositoryset.LargeScaleTaskServiceRepositorySet;
@@ -51,6 +47,8 @@ public class UserInitiateMoneyService {
 
     public static void addAllUserIdToUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
                                                            String taskName, int userBatchSize, List userIdList) {
+        UserInitiateMoneyTaskSegmentIDGeneratorRepository userInitiateMoneyTaskSegmentIDGeneratorRepository =
+                repositorySet.getUserInitiateMoneyTaskSegmentIDGeneratorRepository();
         //分批次
         int size = userIdList.size();
         int batchCount = size / userBatchSize;
@@ -62,6 +60,7 @@ public class UserInitiateMoneyService {
             int end = Math.min((i + 1) * userBatchSize, size);
             List subList = userIdList.subList(start, end);
             UserInitiateMoneyTaskSegment segment = new UserInitiateMoneyTaskSegment();
+            segment.setId(userInitiateMoneyTaskSegmentIDGeneratorRepository.take().generateId());
             segment.setUserIdList(subList);
             LargeScaleTaskService.addTaskSegment(getLargeScaleTaskServiceRepositorySet(repositorySet),
                     taskName, segment);
@@ -126,11 +125,6 @@ public class UserInitiateMoneyService {
             @Override
             public LargeScaleTaskSegmentRepository getLargeScaleTaskSegmentRepository() {
                 return userInitiateMoneyServiceRepositorySet.getUserInitiateMoneyTaskSegmentRepository();
-            }
-
-            @Override
-            public LargeScaleTaskSegmentIDGeneratorRepository getLargeScaleTaskSegmentIDGeneratorRepository() {
-                return userInitiateMoneyServiceRepositorySet.getUserInitiateMoneyTaskSegmentIDGeneratorRepository();
             }
         };
     }

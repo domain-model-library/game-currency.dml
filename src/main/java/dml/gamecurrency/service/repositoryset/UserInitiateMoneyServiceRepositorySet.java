@@ -1,7 +1,6 @@
 package dml.gamecurrency.service.repositoryset;
 
 import dml.gamecurrency.repository.*;
-import dml.largescaletaskmanagement.repository.LargeScaleTaskSegmentIDGeneratorRepository;
 
 public interface UserInitiateMoneyServiceRepositorySet {
 
@@ -15,5 +14,5 @@ public interface UserInitiateMoneyServiceRepositorySet {
 
     UserInitiateMoneyTaskSegmentRepository getUserInitiateMoneyTaskSegmentRepository();
 
-    LargeScaleTaskSegmentIDGeneratorRepository getUserInitiateMoneyTaskSegmentIDGeneratorRepository();
+    UserInitiateMoneyTaskSegmentIDGeneratorRepository getUserInitiateMoneyTaskSegmentIDGeneratorRepository();
 }
