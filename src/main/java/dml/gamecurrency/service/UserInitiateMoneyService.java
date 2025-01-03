@@ -116,10 +116,6 @@ public class UserInitiateMoneyService {
                 return userInitiateMoneyServiceRepositorySet.getGameCurrencyAccountBillItemRepository();
             }
 
-            @Override
-            public GameCurrencyAccountBillItemIdGeneratorRepository getGameCurrencyAccountBillItemIdGeneratorRepository() {
-                return userInitiateMoneyServiceRepositorySet.getGameCurrencyAccountBillItemIdGeneratorRepository();
-            }
         };
     }
 

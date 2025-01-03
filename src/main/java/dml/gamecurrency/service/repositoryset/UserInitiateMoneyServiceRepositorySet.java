@@ -12,8 +12,6 @@ public interface UserInitiateMoneyServiceRepositorySet {
 
     GameCurrencyAccountBillItemRepository getGameCurrencyAccountBillItemRepository();
 
-    GameCurrencyAccountBillItemIdGeneratorRepository getGameCurrencyAccountBillItemIdGeneratorRepository();
-
     UserInitiateMoneyTaskRepository getUserInitiateMoneyTaskRepository();
 
     UserInitiateMoneyTaskSegmentRepository getUserInitiateMoneyTaskSegmentRepository();

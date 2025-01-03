@@ -3,7 +3,10 @@ package dml.gamecurrency.service;
 import dml.gamecurrency.entity.GameCurrencyAccount;
 import dml.gamecurrency.entity.GameCurrencyAccountBillItem;
 import dml.gamecurrency.entity.GameUserCurrencyAccounts;
-import dml.gamecurrency.repository.*;
+import dml.gamecurrency.repository.GameCurrencyAccountBillItemRepository;
+import dml.gamecurrency.repository.GameCurrencyAccountIdGeneratorRepository;
+import dml.gamecurrency.repository.GameCurrencyAccountRepository;
+import dml.gamecurrency.repository.GameUserCurrencyAccountsRepository;
 import dml.gamecurrency.service.repositoryset.GameCurrencyAccountingServiceRepositorySet;
 import dml.gamecurrency.service.result.DepositResult;
 import dml.gamecurrency.service.result.WithdrawResult;
@@ -91,12 +94,9 @@ public class GameCurrencyAccountingService {
                 repositorySet.getGameCurrencyAccountRepository();
         GameCurrencyAccountBillItemRepository<GameCurrencyAccountBillItem, Object> gameCurrencyAccountBillItemRepository =
                 repositorySet.getGameCurrencyAccountBillItemRepository();
-        GameCurrencyAccountBillItemIdGeneratorRepository gameCurrencyAccountBillItemIdGeneratorRepository =
-                repositorySet.getGameCurrencyAccountBillItemIdGeneratorRepository();
 
         GameCurrencyAccount account = accountRepository.take(accountId);
         long transactionNumber = account.deposit(amount);
-        newGameCurrencyAccountBillItem.setId(gameCurrencyAccountBillItemIdGeneratorRepository.take().generateId());
         newGameCurrencyAccountBillItem.setAccountId(accountId);
         newGameCurrencyAccountBillItem.setTransactionNumber(transactionNumber);
         newGameCurrencyAccountBillItem.setTransactionAmount(amount);
@@ -115,8 +115,6 @@ public class GameCurrencyAccountingService {
                 repositorySet.getGameCurrencyAccountRepository();
         GameCurrencyAccountBillItemRepository<GameCurrencyAccountBillItem, Object> gameCurrencyAccountBillItemRepository =
                 repositorySet.getGameCurrencyAccountBillItemRepository();
-        GameCurrencyAccountBillItemIdGeneratorRepository gameCurrencyAccountBillItemIdGeneratorRepository =
-                repositorySet.getGameCurrencyAccountBillItemIdGeneratorRepository();
         GameUserCurrencyAccountsRepository userAccountsRepository = repositorySet.getGameUserCurrencyAccountsRepository();
         GameCurrencyAccountIdGeneratorRepository accountIdGeneratorRepository = repositorySet.getGameCurrencyAccountIdGeneratorRepository();
 
@@ -134,7 +132,6 @@ public class GameCurrencyAccountingService {
             account = accountRepository.take(userAccounts.getAccount(currency));
         }
         long transactionNumber = account.deposit(amount);
-        newGameCurrencyAccountBillItem.setId(gameCurrencyAccountBillItemIdGeneratorRepository.take().generateId());
         newGameCurrencyAccountBillItem.setAccountId(account.getId());
         newGameCurrencyAccountBillItem.setTransactionNumber(transactionNumber);
         newGameCurrencyAccountBillItem.setTransactionAmount(amount);
@@ -152,15 +149,12 @@ public class GameCurrencyAccountingService {
                 repositorySet.getGameCurrencyAccountRepository();
         GameCurrencyAccountBillItemRepository<GameCurrencyAccountBillItem, Object> gameCurrencyAccountBillItemRepository =
                 repositorySet.getGameCurrencyAccountBillItemRepository();
-        GameCurrencyAccountBillItemIdGeneratorRepository gameCurrencyAccountBillItemIdGeneratorRepository =
-                repositorySet.getGameCurrencyAccountBillItemIdGeneratorRepository();
         GameUserCurrencyAccountsRepository userAccountsRepository = repositorySet.getGameUserCurrencyAccountsRepository();
 
         GameUserCurrencyAccounts userAccounts = userAccountsRepository.find(userId);
         Object accountId = userAccounts.getAccount(currency);
         GameCurrencyAccount account = accountRepository.take(accountId);
         long transactionNumber = account.withdraw(amount);
-        newGameCurrencyAccountBillItem.setId(gameCurrencyAccountBillItemIdGeneratorRepository.take().generateId());
         newGameCurrencyAccountBillItem.setAccountId(accountId);
         newGameCurrencyAccountBillItem.setTransactionNumber(transactionNumber);
         newGameCurrencyAccountBillItem.setTransactionAmount(amount);
@@ -178,12 +172,9 @@ public class GameCurrencyAccountingService {
                 repositorySet.getGameCurrencyAccountRepository();
         GameCurrencyAccountBillItemRepository<GameCurrencyAccountBillItem, Object> gameCurrencyAccountBillItemRepository =
                 repositorySet.getGameCurrencyAccountBillItemRepository();
-        GameCurrencyAccountBillItemIdGeneratorRepository gameCurrencyAccountBillItemIdGeneratorRepository =
-                repositorySet.getGameCurrencyAccountBillItemIdGeneratorRepository();
 
         GameCurrencyAccount account = accountRepository.take(accountId);
         long transactionNumber = account.withdraw(amount);
-        newGameCurrencyAccountBillItem.setId(gameCurrencyAccountBillItemIdGeneratorRepository.take().generateId());
         newGameCurrencyAccountBillItem.setAccountId(accountId);
         newGameCurrencyAccountBillItem.setTransactionNumber(transactionNumber);
         newGameCurrencyAccountBillItem.setTransactionAmount(amount);
