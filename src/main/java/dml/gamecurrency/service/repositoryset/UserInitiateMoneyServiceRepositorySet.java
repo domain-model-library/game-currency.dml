@@ -6,9 +6,13 @@ public interface UserInitiateMoneyServiceRepositorySet {
 
     GameCurrencyAccountRepository getGameCurrencyAccountRepository();
 
+    GameCurrencyAccountIdGeneratorRepository getGameCurrencyAccountIdGeneratorRepository();
+
     GameUserCurrencyAccountsRepository getGameUserCurrencyAccountsRepository();
 
     GameCurrencyAccountBillItemRepository getGameCurrencyAccountBillItemRepository();
+
+    GameCurrencyAccountBillItemIdGeneratorRepository getGameCurrencyAccountBillItemIdGeneratorRepository();
 
     UserInitiateMoneyTaskRepository getUserInitiateMoneyTaskRepository();
 

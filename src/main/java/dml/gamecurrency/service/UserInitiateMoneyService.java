@@ -102,6 +102,11 @@ public class UserInitiateMoneyService {
             }
 
             @Override
+            public GameCurrencyAccountIdGeneratorRepository getGameCurrencyAccountIdGeneratorRepository() {
+                return userInitiateMoneyServiceRepositorySet.getGameCurrencyAccountIdGeneratorRepository();
+            }
+
+            @Override
             public GameUserCurrencyAccountsRepository getGameUserCurrencyAccountsRepository() {
                 return userInitiateMoneyServiceRepositorySet.getGameUserCurrencyAccountsRepository();
             }
@@ -111,6 +116,10 @@ public class UserInitiateMoneyService {
                 return userInitiateMoneyServiceRepositorySet.getGameCurrencyAccountBillItemRepository();
             }
 
+            @Override
+            public GameCurrencyAccountBillItemIdGeneratorRepository getGameCurrencyAccountBillItemIdGeneratorRepository() {
+                return userInitiateMoneyServiceRepositorySet.getGameCurrencyAccountBillItemIdGeneratorRepository();
+            }
         };
     }
 

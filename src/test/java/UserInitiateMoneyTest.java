@@ -3,7 +3,9 @@ import dml.common.repository.TestCommonSingletonRepository;
 import dml.gamecurrency.repository.*;
 import dml.gamecurrency.service.UserInitiateMoneyService;
 import dml.gamecurrency.service.repositoryset.UserInitiateMoneyServiceRepositorySet;
+import dml.id.entity.LongIdGenerator;
 import dml.id.entity.UUIDGenerator;
+import dml.largescaletaskmanagement.repository.LargeScaleTaskSegmentIDGeneratorRepository;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -34,8 +36,7 @@ public class UserInitiateMoneyTest {
         //执行任务(为用户1)
         UserInitiateMoneyService.executeUserInitiateMoneyTask(userInitiateMoneyServiceRepositorySet,
                 "task1", currentTime, maxSegmentExecutionTime, maxTimeToTaskReady,
-                new TestGameCurrencyAccount(gameCurrencyAccountIdGenerator++),
-                new TestGameCurrencyAccountBillItem(gameCurrencyAccountBillItemIdGenerator++),
+                new TestGameCurrencyAccount(), new TestGameCurrencyAccountBillItem(),
                 "gold", "1000");
 
         //检测任务是否完成
@@ -46,15 +47,13 @@ public class UserInitiateMoneyTest {
         //执行任务(为用户2)
         UserInitiateMoneyService.executeUserInitiateMoneyTask(userInitiateMoneyServiceRepositorySet,
                 "task1", currentTime, maxSegmentExecutionTime, maxTimeToTaskReady,
-                new TestGameCurrencyAccount(gameCurrencyAccountIdGenerator++),
-                new TestGameCurrencyAccountBillItem(gameCurrencyAccountBillItemIdGenerator++),
+                new TestGameCurrencyAccount(), new TestGameCurrencyAccountBillItem(),
                 "gold", "1000");
 
         //执行任务(为了触发任务结束)
         UserInitiateMoneyService.executeUserInitiateMoneyTask(userInitiateMoneyServiceRepositorySet,
                 "task1", currentTime, maxSegmentExecutionTime, maxTimeToTaskReady,
-                new TestGameCurrencyAccount(gameCurrencyAccountIdGenerator++),
-                new TestGameCurrencyAccountBillItem(gameCurrencyAccountBillItemIdGenerator++),
+                new TestGameCurrencyAccount(), new TestGameCurrencyAccountBillItem(),
                 "gold", "1000");
 
         //检测任务是否完成
@@ -70,6 +69,11 @@ public class UserInitiateMoneyTest {
         }
 
         @Override
+        public GameCurrencyAccountIdGeneratorRepository getGameCurrencyAccountIdGeneratorRepository() {
+            return gameCurrencyAccountIdGeneratorRepository;
+        }
+
+        @Override
         public GameUserCurrencyAccountsRepository getGameUserCurrencyAccountsRepository() {
             return gameUserCurrencyAccountsRepository;
         }
@@ -77,6 +81,11 @@ public class UserInitiateMoneyTest {
         @Override
         public GameCurrencyAccountBillItemRepository getGameCurrencyAccountBillItemRepository() {
             return gameCurrencyAccountBillItemRepository;
+        }
+
+        @Override
+        public GameCurrencyAccountBillItemIdGeneratorRepository getGameCurrencyAccountBillItemIdGeneratorRepository() {
+            return gameCurrencyAccountBillItemIdGeneratorRepository;
         }
 
         @Override
@@ -90,20 +99,22 @@ public class UserInitiateMoneyTest {
         }
 
         @Override
-        public UserInitiateMoneyTaskSegmentIDGeneratorRepository getUserInitiateMoneyTaskSegmentIDGeneratorRepository() {
+        public LargeScaleTaskSegmentIDGeneratorRepository getUserInitiateMoneyTaskSegmentIDGeneratorRepository() {
             return userInitiateMoneyTaskSegmentIDGeneratorRepository;
         }
 
     };
 
     GameCurrencyAccountRepository gameCurrencyAccountRepository = TestCommonRepository.instance(GameCurrencyAccountRepository.class);
-    long gameCurrencyAccountIdGenerator = 1L;
+    GameCurrencyAccountIdGeneratorRepository gameCurrencyAccountIdGeneratorRepository =
+            TestCommonSingletonRepository.instance(GameCurrencyAccountIdGeneratorRepository.class, new LongIdGenerator(1));
     GameUserCurrencyAccountsRepository gameUserCurrencyAccountsRepository = TestCommonRepository.instance(GameUserCurrencyAccountsRepository.class);
     GameCurrencyAccountBillItemRepository gameCurrencyAccountBillItemRepository = TestCommonRepository.instance(GameCurrencyAccountBillItemRepository.class);
-    long gameCurrencyAccountBillItemIdGenerator = 1L;
+    GameCurrencyAccountBillItemIdGeneratorRepository gameCurrencyAccountBillItemIdGeneratorRepository =
+            TestCommonSingletonRepository.instance(GameCurrencyAccountBillItemIdGeneratorRepository.class, new LongIdGenerator(1));
     UserInitiateMoneyTaskRepository userInitiateMoneyTaskRepository = TestCommonRepository.instance(UserInitiateMoneyTaskRepository.class);
     UserInitiateMoneyTaskSegmentRepository userInitiateMoneyTaskSegmentRepository = TestCommonRepository.instance(UserInitiateMoneyTaskSegmentRepository.class);
-    UserInitiateMoneyTaskSegmentIDGeneratorRepository userInitiateMoneyTaskSegmentIDGeneratorRepository = TestCommonSingletonRepository.instance(UserInitiateMoneyTaskSegmentIDGeneratorRepository.class,
+    LargeScaleTaskSegmentIDGeneratorRepository userInitiateMoneyTaskSegmentIDGeneratorRepository = TestCommonSingletonRepository.instance(LargeScaleTaskSegmentIDGeneratorRepository.class,
             new UUIDGenerator());
 
 }
