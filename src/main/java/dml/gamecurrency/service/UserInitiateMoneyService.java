@@ -4,7 +4,10 @@ import dml.gamecurrency.entity.GameCurrencyAccount;
 import dml.gamecurrency.entity.GameCurrencyAccountBillItem;
 import dml.gamecurrency.entity.UserInitiateMoneyTask;
 import dml.gamecurrency.entity.UserInitiateMoneyTaskSegment;
-import dml.gamecurrency.repository.*;
+import dml.gamecurrency.repository.GameCurrencyAccountBillItemRepository;
+import dml.gamecurrency.repository.GameCurrencyAccountRepository;
+import dml.gamecurrency.repository.GameUserCurrencyAccountsRepository;
+import dml.gamecurrency.repository.UserInitiateMoneyTaskRepository;
 import dml.gamecurrency.service.repositoryset.GameCurrencyAccountingServiceRepositorySet;
 import dml.gamecurrency.service.repositoryset.UserInitiateMoneyServiceRepositorySet;
 import dml.largescaletaskmanagement.repository.LargeScaleTaskRepository;
@@ -100,11 +103,6 @@ public class UserInitiateMoneyService {
             }
 
             @Override
-            public GameCurrencyAccountIdGeneratorRepository getGameCurrencyAccountIdGeneratorRepository() {
-                return userInitiateMoneyServiceRepositorySet.getGameCurrencyAccountIdGeneratorRepository();
-            }
-
-            @Override
             public GameUserCurrencyAccountsRepository getGameUserCurrencyAccountsRepository() {
                 return userInitiateMoneyServiceRepositorySet.getGameUserCurrencyAccountsRepository();
             }
@@ -114,10 +112,6 @@ public class UserInitiateMoneyService {
                 return userInitiateMoneyServiceRepositorySet.getGameCurrencyAccountBillItemRepository();
             }
 
-            @Override
-            public GameCurrencyAccountBillItemIdGeneratorRepository getGameCurrencyAccountBillItemIdGeneratorRepository() {
-                return userInitiateMoneyServiceRepositorySet.getGameCurrencyAccountBillItemIdGeneratorRepository();
-            }
         };
     }
 

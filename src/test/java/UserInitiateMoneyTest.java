@@ -36,7 +36,8 @@ public class UserInitiateMoneyTest {
         //执行任务(为用户1)
         UserInitiateMoneyService.executeUserInitiateMoneyTask(userInitiateMoneyServiceRepositorySet,
                 "task1", currentTime, maxSegmentExecutionTime, maxTimeToTaskReady,
-                new TestGameCurrencyAccount(), new TestGameCurrencyAccountBillItem(),
+                new TestGameCurrencyAccount(gameCurrencyAccountIdGenerator.generateId()),
+                new TestGameCurrencyAccountBillItem(gameCurrencyAccountBillItemIdGenerator.generateId()),
                 "gold", "1000");
 
         //检测任务是否完成
@@ -47,13 +48,15 @@ public class UserInitiateMoneyTest {
         //执行任务(为用户2)
         UserInitiateMoneyService.executeUserInitiateMoneyTask(userInitiateMoneyServiceRepositorySet,
                 "task1", currentTime, maxSegmentExecutionTime, maxTimeToTaskReady,
-                new TestGameCurrencyAccount(), new TestGameCurrencyAccountBillItem(),
+                new TestGameCurrencyAccount(gameCurrencyAccountIdGenerator.generateId()),
+                new TestGameCurrencyAccountBillItem(gameCurrencyAccountBillItemIdGenerator.generateId()),
                 "gold", "1000");
 
         //执行任务(为了触发任务结束)
         UserInitiateMoneyService.executeUserInitiateMoneyTask(userInitiateMoneyServiceRepositorySet,
                 "task1", currentTime, maxSegmentExecutionTime, maxTimeToTaskReady,
-                new TestGameCurrencyAccount(), new TestGameCurrencyAccountBillItem(),
+                new TestGameCurrencyAccount(gameCurrencyAccountIdGenerator.generateId()),
+                new TestGameCurrencyAccountBillItem(gameCurrencyAccountBillItemIdGenerator.generateId()),
                 "gold", "1000");
 
         //检测任务是否完成
@@ -69,11 +72,6 @@ public class UserInitiateMoneyTest {
         }
 
         @Override
-        public GameCurrencyAccountIdGeneratorRepository getGameCurrencyAccountIdGeneratorRepository() {
-            return gameCurrencyAccountIdGeneratorRepository;
-        }
-
-        @Override
         public GameUserCurrencyAccountsRepository getGameUserCurrencyAccountsRepository() {
             return gameUserCurrencyAccountsRepository;
         }
@@ -81,11 +79,6 @@ public class UserInitiateMoneyTest {
         @Override
         public GameCurrencyAccountBillItemRepository getGameCurrencyAccountBillItemRepository() {
             return gameCurrencyAccountBillItemRepository;
-        }
-
-        @Override
-        public GameCurrencyAccountBillItemIdGeneratorRepository getGameCurrencyAccountBillItemIdGeneratorRepository() {
-            return gameCurrencyAccountBillItemIdGeneratorRepository;
         }
 
         @Override
@@ -106,12 +99,10 @@ public class UserInitiateMoneyTest {
     };
 
     GameCurrencyAccountRepository gameCurrencyAccountRepository = TestCommonRepository.instance(GameCurrencyAccountRepository.class);
-    GameCurrencyAccountIdGeneratorRepository gameCurrencyAccountIdGeneratorRepository =
-            TestCommonSingletonRepository.instance(GameCurrencyAccountIdGeneratorRepository.class, new LongIdGenerator(1));
+    LongIdGenerator gameCurrencyAccountIdGenerator = new LongIdGenerator(1);
     GameUserCurrencyAccountsRepository gameUserCurrencyAccountsRepository = TestCommonRepository.instance(GameUserCurrencyAccountsRepository.class);
     GameCurrencyAccountBillItemRepository gameCurrencyAccountBillItemRepository = TestCommonRepository.instance(GameCurrencyAccountBillItemRepository.class);
-    GameCurrencyAccountBillItemIdGeneratorRepository gameCurrencyAccountBillItemIdGeneratorRepository =
-            TestCommonSingletonRepository.instance(GameCurrencyAccountBillItemIdGeneratorRepository.class, new LongIdGenerator(1));
+    LongIdGenerator gameCurrencyAccountBillItemIdGenerator = new LongIdGenerator(1);
     UserInitiateMoneyTaskRepository userInitiateMoneyTaskRepository = TestCommonRepository.instance(UserInitiateMoneyTaskRepository.class);
     UserInitiateMoneyTaskSegmentRepository userInitiateMoneyTaskSegmentRepository = TestCommonRepository.instance(UserInitiateMoneyTaskSegmentRepository.class);
     LargeScaleTaskSegmentIDGeneratorRepository userInitiateMoneyTaskSegmentIDGeneratorRepository = TestCommonSingletonRepository.instance(LargeScaleTaskSegmentIDGeneratorRepository.class,
