@@ -69,19 +69,19 @@ public class UserInitiateMoneyService {
                 taskName);
     }
 
-    public static void executeUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
-                                                    String taskName, long currentTime,
-                                                    long maxSegmentExecutionTime, long maxTimeToTaskReady,
-                                                    GameCurrencyAccount newAccount,
-                                                    GameCurrencyAccountBillItem newAccountBillItem,
-                                                    String currency, String amount) {
+    public static Object executeUserInitiateMoneyTask(UserInitiateMoneyServiceRepositorySet repositorySet,
+                                                      String taskName, long currentTime,
+                                                      long maxSegmentExecutionTime, long maxTimeToTaskReady,
+                                                      GameCurrencyAccount newAccount,
+                                                      GameCurrencyAccountBillItem newAccountBillItem,
+                                                      String currency, String amount) {
 
         TakeTaskSegmentToExecuteResult takeSegmentResult = LargeScaleTaskService.takeTaskSegmentToExecute(
                 getLargeScaleTaskServiceRepositorySet(repositorySet),
                 taskName, currentTime, maxSegmentExecutionTime, maxTimeToTaskReady);
         UserInitiateMoneyTaskSegment segment = (UserInitiateMoneyTaskSegment) takeSegmentResult.getTaskSegment();
         if (segment == null) {
-            return;
+            return null;
         }
         Object userId = segment.getOneUserId();//一次只处理一个用户，避免锁多个用户
         GameCurrencyAccount account = GameCurrencyAccountingService.
@@ -90,6 +90,7 @@ public class UserInitiateMoneyService {
         GameCurrencyAccountingService.deposit(getGameCurrencyAccountingServiceRepositorySet(repositorySet),
                 account.getId(), amount, newAccountBillItem);
         segment.executedForUser(userId);
+        return userId;
     }
 
     private static GameCurrencyAccountingServiceRepositorySet getGameCurrencyAccountingServiceRepositorySet(
